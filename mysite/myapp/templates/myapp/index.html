@@ -1,0 +1,198 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calorie Count App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-dark bg-primary">
+                    <span class="navbar-brand">
+                        Calorie Tracker
+                    </span>
+
+                </nav>
+
+            </div>
+        </div>
+        <br>
+        <h4>Calorie Goal</h4>
+        <br>
+        <div class="row">
+            <div class="col-md-9 offset-1">
+                <div class="progress">
+                    <div class="progress-bar bg-success" role="progressbar" style="width:50%;" aria-valuenow="0"
+                     aria-valuemin="0" aria-valuemax="0">0</div>
+                </div>
+                <br>
+                <br>
+            </div>
+        </div>  
+        <br>
+          
+
+        <div class="row">
+            <div class="col-md-12">
+                <form action="" method="POST">
+                    <div class="form-group row">
+                        {% csrf_token %}
+                        <label class="col-md-2">
+                            <b>🥗 Select Food to add</b>
+                        </label>
+                        
+                        <select class="col-md-6 form-control"  name="food_consumed" id="food_consumed">
+                            {%for food in foods%}
+                            <option value= "{{food.name}}">
+                                {{food.name}}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <button  class="btn btn-success" type="submit">Add</button>
+                        
+                      
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-7">
+                <div>
+                    <h4>
+                        🍽️ Todays's consumption
+                    </h4>
+                </div>
+                <table id="table" class="table table-striped table-primary"> 
+                    <thead class="bg-primary text-white">
+                        <th>🍽️ Food Item</th>
+                        <th>🍞 Carbs (gm)</th>
+                        <th>🍗 Protein (gm)</th>
+                        <th>🧈 Fat (gm)</th>
+                        <th>🌾 Fibre (gm)</th>
+                        <th>🍬 Sugar (gm)</th>
+                        <th>🔥 Calorie (kcal)</th>
+                        <th>Remove item</th>
+                    </thead>
+                    
+
+                    <tbody>
+                        {% for c in consumed_food %}
+                        <tr>
+                            <td>{{c.food_consumed.name}}</td>
+                            <td>{{c.food_consumed.carbs}}</td>
+                            <td>{{c.food_consumed.protein}}</td>
+                            <td>{{c.food_consumed.fats}}</td>
+                            <td>{{c.food_consumed.fibre}}</td>
+                            <td>{{c.food_consumed.sugar}}</td>
+                            <td>{{c.food_consumed.calorie}}</td>
+                            <td><a class="btn btn-danger" href="{% url 'delete' c.id %}">X</a></td>
+                        </tr>  
+                        {% endfor %}  
+                        <tr>
+                            <td id="name"><b>🧮 Total</b></td>
+                            <td id="totalCarbs"><b></b></td>
+                            <td id="totalProtein"><b></b></td>
+                            <td id="totalFats"><b></b></td>
+                            <td id="totalFibre"><b></b></td>
+                            <td id="totalSugar"><b></b></td>
+                            <td id="totalCalorie"><b></b></td>
+                        </tr>
+                    </tbody>
+                        
+                </table>
+            </div>    
+                
+                
+  
+            <div class="col-md-5">
+             <div>   
+            <h4>📊 Macronutrients Breakdown</h4>
+             </div>
+            <div class="card shadow-sm">
+             <div class="card-body">
+            <canvas id="myChart"  width="300" height="300"></canvas>
+            </div>
+            </div>
+
+             
+            
+            </div>
+            
+
+        </div>
+    </div>
+       
+    
+
+<script>
+    var table=document.getElementById("table");
+    var carbs=0;
+    var protein=0;
+    var fats=0;
+    var fibre=0;
+    var sugar=0;
+    var calories=0;
+
+    for(var i=1;i<table.rows.length-1;i++)
+    {
+        console.log(table.rows[i].cells[1].innerHTML)|| 0;
+        carbs+=parseFloat(table.rows[i].cells[1].innerHTML)|| 0;
+        protein+=parseFloat(table.rows[i].cells[2].innerHTML)|| 0;
+        fats+=parseFloat(table.rows[i].cells[3].innerHTML)|| 0;
+        fibre+=parseFloat(table.rows[i].cells[4].innerHTML)|| 0;
+        sugar+=parseFloat(table.rows[i].cells[5].innerHTML)|| 0;
+        calories+=parseFloat(table.rows[i].cells[6].innerHTML)|| 0;
+           
+
+    }
+
+
+    document.getElementById("totalCarbs").querySelector("b").innerHTML = carbs.toFixed(2)+ " gms";
+    document.getElementById("totalProtein").querySelector("b").innerHTML = protein.toFixed(2)+ " gms";
+    document.getElementById("totalFats").querySelector("b").innerHTML = fats.toFixed(2)+ " gms";
+    document.getElementById("totalFibre").querySelector("b").innerHTML = fibre.toFixed(2)+ " gms";
+    document.getElementById("totalSugar").querySelector("b").innerHTML = sugar.toFixed(2)+ " gms";
+    document.getElementById("totalCalorie").querySelector("b").innerHTML = calories.toFixed(2)+ "Kcal";
+
+
+    var calPar= (calories/2000)*100;
+    document.getElementsByClassName("progress-bar")[0].setAttribute("style","width:"+calPar+"%");
+
+    var total = carbs+protein+fats+fibre+sugar;
+    var carbp = Math.round((carbs/total)*100);
+    var prop = Math.round((protein/total)*100);
+    var fatp = Math.round((fats/total)*100);
+    var fibrep = Math.round((fibre/total)*100);
+    var sugarp = Math.round((sugar/total)*100)
+    
+
+
+
+    const ctx = document.getElementById('myChart').getContext('2d');
+    const myChart = new Chart(ctx, {
+    type: 'doughnut', // other options: 'line', 'pie', 'doughnut', etc.
+    data: {
+        labels: ['Carbs '+carbp+'%', 'Protein '+prop+"%", 'Fats '+fatp+"%",'Fibre '+fibrep+"%",'Sugar '+sugarp+"%"],
+        datasets: [{
+            label: 'Nutrition Breakdown (g)',
+            data: [carbp,prop,fatp,fibrep,sugarp],
+            backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56','#4bc0c0','#8e44ad'],
+            borderWidth: 1
+        }]
+    },
+    
+});
+
+
+</script>
+</body>
+</html>
