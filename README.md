@@ -24,8 +24,10 @@ A simple and elegant web app built with Django to help users track their daily f
 ---
 
 ## 📸 Screenshots
+<p align="center>
+  <img src="images/screenshot.png width="500">
+</p>
 
-![app view](images/screenshot17.png)
 ![table and chart view](images/screenshot18.png)
 
 
