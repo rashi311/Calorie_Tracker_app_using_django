@@ -17,7 +17,7 @@ A simple and elegant web app built with Django to help users track their daily f
 
 ## 📊 Charts
 
-- Uses **Chart.js** (or your preferred library) to show nutrient distribution
+- Uses **Chart.js**  to show nutrient distribution
 - Visual representation of **Carbs, Proteins, and Fats**
 - Helps users quickly assess their daily intake
 
@@ -25,8 +25,10 @@ A simple and elegant web app built with Django to help users track their daily f
 
 ## 📸 Screenshots
 
-(images\screenshot17.png)
-(images/screenshot.png)
+![app view](images/screenshot17.png)
+![table and chart view](images/screenshot18.png)
+
+
 ---
 
 ## 🛠️ Tech Stack
